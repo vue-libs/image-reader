@@ -43,7 +43,6 @@ export default {
       const {
         data: { text },
       } = await worker.recognize(img);
-      that.text = text;
       console.log(text);
     },
   },
