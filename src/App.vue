@@ -4,7 +4,6 @@
     <HelloWorld msg="Welcome to Your Vue.js App" />
      <button v-on:click="recognize">recognize</button>
     <img id="text-img" alt="Vue logo" src="./assets/testocr.png">
-    {{this.text}}
   </div>
 </template>
 
