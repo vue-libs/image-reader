@@ -1,7 +1,7 @@
 <template>
   <div id="app">
-    <b-button v-on:click="recognize">Read</b-button>
-    <img id="text-img" alt="Vue logo" src="./assets/testocr.png">
+    <ImageReader v-model="text" :config="config" />
+    This is text:     {{ text }}
   </div>
 </template>
 
@@ -12,43 +12,20 @@ const worker = createWorker({
   logger: (m) => console.log(m),
 });
 
+import ImageReader from "./components/ImageReader";
 export default {
   name: "App",
-  data(){
+  components: { ImageReader },
+  data() {
     return {
-      text:''
-    }
-  },
-  mounted() {
-
-  },
-
-  methods: {
-    recognize: async () => {
-      let that = this;
-      const img = document.getElementById("text-img");
-      await worker.load();
-      await worker.loadLanguage("eng");
-      await worker.initialize("eng", OEM.LSTM_ONLY);
-      await worker.setParameters({
-        tessedit_pageseg_mode: PSM.SINGLE_BLOCK,
-      });
-      const {
-        data: { text },
-      } = await worker.recognize(img);
-      console.log(text);
-    },
+      text: "",
+      config: {
+        src: "",
+      },
+    };
   },
 };
 </script>
 
 <style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
-}
 </style>
