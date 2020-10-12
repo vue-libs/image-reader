@@ -1,15 +1,11 @@
 <template>
   <div id="app">
-    <img alt="Vue logo" src="./assets/logo.png" />
-    <HelloWorld msg="Welcome to Your Vue.js App" />
-     <button v-on:click="recognize">recognize</button>
+    <b-button v-on:click="recognize">Read</b-button>
     <img id="text-img" alt="Vue logo" src="./assets/testocr.png">
   </div>
 </template>
 
 <script>
-import HelloWorld from "./components/HelloWorld.vue";
-
 /* eslint-disable */
 import { createWorker, PSM, OEM } from "tesseract.js";
 const worker = createWorker({
@@ -22,9 +18,6 @@ export default {
     return {
       text:''
     }
-  },
-  components: {
-    HelloWorld,
   },
   mounted() {
 
