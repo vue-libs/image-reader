@@ -14,16 +14,12 @@
 </template>
 
 <script>
-import { BFormFile } from "bootstrap-vue";
 import { createWorker, PSM, OEM } from "tesseract.js";
 const worker = createWorker({
   logger: (m) => console.log(m),
 });
 export default {
   name: "ImageReader",
-  components: {
-    BFormFile,
-  },
   data() {
     return {
       imageFile: null,
