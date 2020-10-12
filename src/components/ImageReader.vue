@@ -15,9 +15,11 @@
 
 <script>
 import { createWorker, PSM, OEM } from "tesseract.js";
+
 const worker = createWorker({
   logger: (m) => console.log(m),
 });
+
 export default {
   name: "ImageReader",
   data() {
@@ -62,7 +64,7 @@ export default {
       const {
         data: { text },
       } = await worker.recognize(img);
-      this.$emit("input",text);
+      this.$emit("input", text);
     },
   },
 };
