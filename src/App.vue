@@ -1,6 +1,6 @@
 <template>
-  <div>
-    <ImageReader v-model="text" :config="config" />
+  <div class="container">
+    <ImageReader v-model="text"/>
     This is text:     {{ text }}
   </div>
 </template>
@@ -12,10 +12,7 @@ export default {
   components: { ImageReader },
   data() {
     return {
-      text: "",
-      config: {
-        src: "",
-      },
+      text: "",      
     };
   },
 };

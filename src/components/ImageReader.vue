@@ -7,9 +7,14 @@
       accept=".jpg, .png, .gif"
     ></b-form-file>
 
-    <img id="text-img" alt="Vue logo" :src="selectedImage" />
+    <img
+      id="text-img"
+      alt="No image selected"
+      crossorigin="anonymous"
+      :src="selectedImageBase64"
+    />
 
-    <b-button v-on:click="recognize">Read</b-button>
+    <b-button @click="recognize" :disabled="selectedImageBase64.length <= 0">Read</b-button>
   </div>
 </template>
 
@@ -25,7 +30,7 @@ export default {
   data() {
     return {
       imageFile: null,
-      selectedImage: null,
+      selectedImageBase64: "",
     };
   },
   watch: {
@@ -50,8 +55,9 @@ export default {
     },
 
     getImageData: async function (file) {
-      this.selectedImage = await this.getBase64(file);
+      this.selectedImageBase64 = await this.getBase64(file);
     },
+
     recognize: async function () {
       const img = document.getElementById("text-img");
       await worker.load();
@@ -64,6 +70,7 @@ export default {
       const {
         data: { text },
       } = await worker.recognize(img);
+      
       this.$emit("input", text);
     },
   },
