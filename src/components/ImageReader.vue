@@ -14,7 +14,7 @@
       :src="selectedImageBase64"
     />
 
-    <b-button @click="recognize" :disabled="selectedImageBase64.length <= 0">Read</b-button>
+    <b-button :class="isNotReadable? 'btn-danger': 'btn-success' " @click="recognize" :disabled="isNotReadable" >Read</b-button>
   </div>
 </template>
 
@@ -43,6 +43,11 @@ export default {
       type: String,
       required: true,
     },
+  },
+  computed:{
+    isNotReadable(){
+      return this.selectedImageBase64.length <= 0;
+    }
   },
   methods: {
     getBase64: function (file) {
