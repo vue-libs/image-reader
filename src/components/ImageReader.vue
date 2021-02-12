@@ -1,20 +1,32 @@
 <template>
   <div>
-    <b-form-file
-      v-model="imageFile"
-      placeholder="Choose a file or drop it here..."
-      drop-placeholder="Drop file here..."
-      accept=".jpg, .png, .gif"
-    ></b-form-file>
+    <div class="row">
+      <div class="col-10">
+        <b-form-file
+          v-model="imageFile"
+          placeholder="Choose a file or drop it here..."
+          drop-placeholder="Drop file here..."
+          accept=".jpg, .png, .gif"
+        ></b-form-file>
+      </div>
+      <div class="col-2">
+        <b-button
+          :class="isNotReadable ? 'btn-danger' : 'btn-success'"
+          @click="recognize"
+          :disabled="isNotReadable"
+        >
+          Read
+        </b-button>
+      </div>
+    </div>
 
     <img
       id="text-img"
+      height="500px"
       alt="No image selected"
       crossorigin="anonymous"
       :src="selectedImageBase64"
     />
-
-    <b-button :class="isNotReadable? 'btn-danger': 'btn-success' " @click="recognize" :disabled="isNotReadable" >Read</b-button>
   </div>
 </template>
 
@@ -44,10 +56,10 @@ export default {
       required: true,
     },
   },
-  computed:{
-    isNotReadable(){
+  computed: {
+    isNotReadable() {
       return this.selectedImageBase64.length <= 0;
-    }
+    },
   },
   methods: {
     getBase64: function (file) {
@@ -75,7 +87,7 @@ export default {
       const {
         data: { text },
       } = await worker.recognize(img);
-      
+
       this.$emit("input", text);
     },
   },
