@@ -119,10 +119,10 @@ export default {
       return this.selectedImageBase64.length > 0 || this.imageURL.length > 0;
     },
     getDynamicSource() {
-      if (this.selectedImageBase64 && this.config.browse) {
+      if (this.selectedImageBase64.length > 0 && this.config.browse) {
         return this.selectedImageBase64;
-      } else if (this.imageURL && this.config.src) {
-        return this.config.src;
+      } else if (this.imageURL.length > 0 && this.config.src) {
+        return this.imageURL;
       }
       return "https://tesseract.projectnaptha.com/img/eng_bw.png";
     },
@@ -157,7 +157,7 @@ export default {
 
       await worker.loadLanguage(language);
       await worker.initialize(language, OEM.LSTM_ONLY);
-      
+
       await worker.setParameters({
         tessedit_pageseg_mode: PSM.SINGLE_BLOCK,
       });
