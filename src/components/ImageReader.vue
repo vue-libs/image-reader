@@ -15,23 +15,33 @@
           placeholder="Enter URL here"
         ></b-form-input>
       </div>
-      <div class="col-1">
-        <b-button
-          :class="isReadable ? 'btn-success' : 'btn-danger'"
-          :disabled="!isReadable"
-          @click="clearSelections"
-        >
-          <b-icon icon="x-square-fill"> </b-icon
-        ></b-button>
-      </div>
-      <div class="col-1">
-        <b-button
-          :class="isReadable ? 'btn-success' : 'btn-danger'"
-          @click="recognize"
-          :disabled="!isReadable"
-        >
-          Read
-        </b-button>
+      <div class="col-2">
+        <div class="row">
+          <div class="col-6">
+            <b-button
+              :class="isReadable ? 'btn-success' : 'btn-danger'"
+              :disabled="!isReadable"
+              @click="clearSelections"
+            >
+              <b-icon icon="x-square-fill"> </b-icon
+            ></b-button>
+          </div>
+          <div class="col-6">
+            <b-button
+              :class="isReadable ? 'btn-success' : 'btn-danger'"
+              @click="recognize"
+              :disabled="!isReadable"
+            >
+              Read
+            </b-button>
+          </div>
+        </div>
+        <div class="row">
+          <b-form-select
+            v-model="selectedLanguage"
+            :options="languageOptions"
+          ></b-form-select>
+        </div>
       </div>
     </div>
 
@@ -51,6 +61,7 @@
 
 <script>
 import { createWorker, PSM, OEM } from "tesseract.js";
+import languages from "./languages.json";
 
 const worker = createWorker({
   logger: (m) => console.log(m),
@@ -60,6 +71,9 @@ export default {
   name: "ImageReader",
   data() {
     return {
+      languages: languages,
+      languageOptions: [{ value: null, text: "Select language" }],
+      selectedLanguage: null,
       imageFile: null,
       selectedImageBase64: "",
       imageURL: "",
@@ -89,12 +103,16 @@ export default {
           browse: true,
           src: "https://tesseract.projectnaptha.com/img/eng_bw.png",
           showImage: true,
+          multiLanguage: true,
         };
       },
     },
   },
   mounted() {
     this.imageURL = this.config.src;
+    for (const lang in languages) {
+      this.languageOptions.push({ value: lang, text: languages[lang] });
+    }
   },
   computed: {
     isReadable() {
@@ -131,18 +149,25 @@ export default {
 
     recognize: async function () {
       await worker.load();
-      await worker.loadLanguage("eng");
-      await worker.initialize("eng", OEM.LSTM_ONLY);
+
+      let language = "eng";
+      if (this.config.multiLanguage) {
+        language = this.selectedLanguage;
+      }
+
+      await worker.loadLanguage(language);
+      await worker.initialize(language, OEM.LSTM_ONLY);
+      
       await worker.setParameters({
         tessedit_pageseg_mode: PSM.SINGLE_BLOCK,
       });
 
       let img = "https://tesseract.projectnaptha.com/img/eng_bw.png"; // Default Image
 
-      if (this.selectedImageBase64 && this.config.browse) {
+      if (this.selectedImageBase64.length > 0 && this.config.browse) {
         img = document.getElementById("text-img");
-      } else if (this.imageURL && this.config.src) {
-        img = this.config.src;
+      } else if (this.imageURL.length > 0 && this.config.src) {
+        img = this.imageURL;
       }
 
       const {

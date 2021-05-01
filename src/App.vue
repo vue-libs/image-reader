@@ -17,6 +17,7 @@ export default {
         browse: true,
         src: "https://tesseract.projectnaptha.com/img/eng_bw.png",
         showImage: true,
+        multiLanguage: true,
       },
     };
   },
