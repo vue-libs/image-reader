@@ -45,6 +45,14 @@
       </div>
     </div>
 
+    <div v-if="showStats">
+      <div class="progress-text">
+         <p>{{workerStatus}} || {{workerStatusPercentage.toFixed(2)}} %</p>
+      </div>
+      <b-progress :value="workerStatusPercentage" height="5px" :max="100" animated>
+      </b-progress>
+    </div>
+
     <div>
       <b-img
         v-if="isReadable && config.showImage"
@@ -62,15 +70,21 @@
 <script>
 import { createWorker, PSM, OEM } from "tesseract.js";
 import languages from "./languages.json";
+let THAT = null;
 
 const worker = createWorker({
-  logger: (m) => console.log(m),
+  logger: (m) => {
+    THAT.getWorkerLogs(m);
+  },
 });
 
 export default {
   name: "ImageReader",
   data() {
     return {
+      workerStatusPercentage: 0,
+      workerStatus:"",
+      showStats:false,
       languages: languages,
       languageOptions: [{ value: null, text: "Select language" }],
       selectedLanguage: null,
@@ -113,6 +127,9 @@ export default {
     for (const lang in languages) {
       this.languageOptions.push({ value: lang, text: languages[lang] });
     }
+
+    // Initialize global THAT with current instance of this
+    THAT = this;
   },
   computed: {
     isReadable() {
@@ -128,6 +145,10 @@ export default {
     },
   },
   methods: {
+    getWorkerLogs(e) {
+      this.workerStatusPercentage = e.progress * 100;
+      this.workerStatus = e.status;
+    },
     getBase64: function (file) {
       return new Promise((resolve, reject) => {
         const reader = new FileReader();
@@ -145,9 +166,14 @@ export default {
       this.imageFile = null;
       this.selectedImageBase64 = "";
       this.imageURL = "";
+      this.showStats = false;
+      this.$emit("input", "");
+      this.workerStatusPercentage = 0;
+      this.workerStatus = "";
     },
 
     recognize: async function () {
+      this.showStats = true;
       await worker.load();
 
       let language = "eng";
@@ -179,3 +205,8 @@ export default {
   },
 };
 </script>
+<style scoped>
+.progress-text{
+  text-align: center;
+}
+</style>
