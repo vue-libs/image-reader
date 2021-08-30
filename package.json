@@ -1,11 +1,23 @@
 {
   "name": "@vue-libs/image-reader",
   "version": "0.1.0",
+  "private": false,
+  "license": "MIT",
+  "main": "./dist/image-reader.common.js",
+  "unpkg": "./dist/image-reader.umd.min.js",
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
-    "lint": "vue-cli-service lint"
+    "lint": "vue-cli-service lint",
+    "build-package": "vue-cli-service build --target lib --name image-reader ./src/components/ImageReader.vue"
   },
+  "keywords": [
+    "vue",
+    "vue-js",
+    "image",
+    "reader"
+  ],
+  "description": "A package made for reading text from images supports both URL and local browsed image.",
   "dependencies": {
     "bootstrap-vue": "^2.17.3",
     "core-js": "^3.6.5",
